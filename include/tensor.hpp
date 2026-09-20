@@ -1,18 +1,30 @@
 #pragma once
 
-#include<iostream>
-#include<vector>
+#include <cstddef>
+#include <vector>
 
 class Tensor {
 public:
-	Tensor(const std::vector<size_t>& shape);
-	const std::vector<size_t>& shape() const;
-	size_t size() const ;
-	float* data() ;
-	const float* data() const;
-	float& operator()(size_t row, size_t column);
-	const float& operator()(size_t row, size_t column) const;
+    explicit Tensor(const std::vector<size_t>& shape);
+
+    const std::vector<size_t>& shape() const;
+
+    size_t size() const;
+
+    size_t ndim() const;
+
+    float* data();
+    const float* data() const;
+
+    float& operator()(const std::vector<size_t>& indices);
+    const float& operator()(const std::vector<size_t>& indices) const;
+
 private:
-	std::vector<size_t> shape_ ;
-	std::vector<float> data_ ;
+    size_t compute_offset(
+        const std::vector<size_t>& indices
+    ) const;
+
+    std::vector<size_t> shape_;
+    std::vector<size_t> strides_;
+    std::vector<float> data_;
 };
