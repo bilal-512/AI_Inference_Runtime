@@ -35,3 +35,10 @@ target_link_libraries(tensor_example
     PRIVATE
         runtime_core
 )
+add_executable(tensor_test
+	tests/tensor_test.cpp
+	)
+target_link_libraries(tensor_test
+	PRIVATE
+	runtime_core
+)

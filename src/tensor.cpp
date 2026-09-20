@@ -33,3 +33,12 @@ float* Tensor::data() {
 const float* Tensor::data() const {
  return data_.data();
 }
+
+float& Tensor::operator()(size_t row, size_t column){
+	return data_[row * shape_[1] + column];
+}
+
+const float& Tensor::operator()(size_t row, size_t column)const {
+	return data_[row * shape_[1]+column];
+}
+
