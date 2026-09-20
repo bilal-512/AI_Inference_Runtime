@@ -1,3 +1,0 @@
-/home/bilal/Desktop/Bilal/AI_Inference_Runtime/build/CMakeFiles/runtime.dir
-/home/bilal/Desktop/Bilal/AI_Inference_Runtime/build/CMakeFiles/edit_cache.dir
-/home/bilal/Desktop/Bilal/AI_Inference_Runtime/build/CMakeFiles/rebuild_cache.dir
