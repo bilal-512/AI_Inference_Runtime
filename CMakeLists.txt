@@ -11,6 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(runtime_core
     src/tensor.cpp
+    src/operators/add.cpp
 )
 
 target_include_directories(runtime_core
@@ -35,10 +36,20 @@ target_link_libraries(tensor_example
     PRIVATE
         runtime_core
 )
+
 add_executable(tensor_test
-	tests/tensor_test.cpp
-	)
+    tests/tensor_test.cpp
+)
+
 target_link_libraries(tensor_test
-	PRIVATE
-	runtime_core
+    PRIVATE
+        runtime_core
+)
+
+add_executable(add_test
+    tests/add_test.cpp
+)
+
+target_link_libraries(add_test
+    runtime_core
 )
