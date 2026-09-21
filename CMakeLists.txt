@@ -12,6 +12,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(runtime_core
     src/tensor.cpp
     src/operators/add.cpp
+    src/operators/relu.cpp
+    src/operators/matmul.cpp
 )
 
 target_include_directories(runtime_core
@@ -51,5 +53,26 @@ add_executable(add_test
 )
 
 target_link_libraries(add_test
-    runtime_core
+    PRIVATE
+        runtime_core
 )
+
+add_executable(relu_test
+    tests/relu_test.cpp
+)
+
+target_link_libraries(relu_test
+    PRIVATE
+        runtime_core
+)
+
+
+add_executable(matmul_test
+    tests/matmul_test.cpp
+)
+
+target_link_libraries(matmul_test
+    PRIVATE
+        runtime_core
+)
+
