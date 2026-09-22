@@ -16,6 +16,7 @@ add_library(runtime_core
     src/operators/matmul.cpp
     src/operators/softmax.cpp
     src/operators/layernorm.cpp
+    src/operators/gelu.cpp
 )
 
 target_include_directories(runtime_core
@@ -93,6 +94,17 @@ add_executable(layernorm_test
 )
 
 target_link_libraries(layernorm_test
+    PRIVATE
+        runtime_core
+)
+
+
+
+add_executable(gelu_test
+    tests/gelu_test.cpp
+)
+
+target_link_libraries(gelu_test
     PRIVATE
         runtime_core
 )
