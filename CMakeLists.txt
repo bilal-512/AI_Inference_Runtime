@@ -14,6 +14,8 @@ add_library(runtime_core
     src/operators/add.cpp
     src/operators/relu.cpp
     src/operators/matmul.cpp
+    src/operators/softmax.cpp
+    src/operators/layernorm.cpp
 )
 
 target_include_directories(runtime_core
@@ -76,3 +78,21 @@ target_link_libraries(matmul_test
         runtime_core
 )
 
+add_executable(softmax_test
+    tests/softmax_test.cpp
+)
+
+target_link_libraries(softmax_test
+    PRIVATE
+        runtime_core
+)
+
+
+add_executable(layernorm_test
+    tests/layernorm_test.cpp
+)
+
+target_link_libraries(layernorm_test
+    PRIVATE
+        runtime_core
+)
