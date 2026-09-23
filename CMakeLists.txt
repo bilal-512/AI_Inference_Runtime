@@ -11,6 +11,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(runtime_core
     src/tensor.cpp
+
+    src/node.cpp
+
+    src/graph.cpp
     src/operators/add.cpp
     src/operators/relu.cpp
     src/operators/matmul.cpp
@@ -105,6 +109,28 @@ add_executable(gelu_test
 )
 
 target_link_libraries(gelu_test
+    PRIVATE
+        runtime_core
+)
+
+
+
+add_executable(node_test
+    tests/node_test.cpp
+)
+
+target_link_libraries(node_test
+    PRIVATE
+        runtime_core
+)
+
+
+
+add_executable(graph_test
+    tests/graph_test.cpp
+)
+
+target_link_libraries(graph_test
     PRIVATE
         runtime_core
 )
