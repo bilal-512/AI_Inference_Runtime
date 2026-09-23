@@ -1,6 +1,5 @@
 #pragma once
 
-#include<vector>
 #include "node.hpp"
 
 #include <cstddef>
@@ -16,14 +15,17 @@ public:
 
     const Node& node(size_t id) const;
 
-    bool validate() const;
-
-
-   std::vector<size_t> execution_order() const;
-
     Node& node(size_t id);
 
     size_t size() const;
+
+    bool validate() const;
+
+    std::vector<size_t> execution_order() const;
+
+    std::vector<size_t> input_nodes() const;
+
+    std::vector<size_t> output_nodes() const;
 
 private:
     std::vector<Node> nodes_;

@@ -162,3 +162,37 @@ std::vector<size_t> Graph::execution_order() const
 
     return order;
 }
+
+
+std::vector<size_t> Graph::input_nodes() const
+{
+    std::vector<size_t> inputs;
+
+    for (const Node& current : nodes_)
+    {
+        if (current.inputs().empty())
+        {
+            inputs.push_back(current.id());
+        }
+    }
+
+    return inputs;
+}
+
+
+
+
+std::vector<size_t> Graph::output_nodes() const
+{
+    std::vector<size_t> outputs;
+
+    for (const Node& current : nodes_)
+    {
+        if (current.outputs().empty())
+        {
+            outputs.push_back(current.id());
+        }
+    }
+
+    return outputs;
+}

@@ -117,6 +117,55 @@ int main()
     assert(order[3] == relu);
 
 
+       // Test graph input nodes
+    std::vector<size_t> input_nodes =
+        graph.input_nodes();
+
+    assert(input_nodes.size() == 1);
+    assert(input_nodes[0] == input);
+
+
+    // Test graph output nodes
+    std::vector<size_t> output_nodes =
+        graph.output_nodes();
+
+    assert(output_nodes.size() == 1);
+    assert(output_nodes[0] == relu);
+
+
+
+
+       // Test multiple graph inputs
+
+    Graph multi_input_graph;
+
+    size_t x =
+        multi_input_graph.addNode("Input");
+
+    size_t weights =
+        multi_input_graph.addNode("Input");
+
+    size_t multi_matmul =
+        multi_input_graph.addNode("MatMul");
+
+    multi_input_graph.connect(x, multi_matmul);
+    multi_input_graph.connect(weights, multi_matmul);
+
+    assert(multi_input_graph.validate());
+
+    std::vector<size_t> multi_inputs =
+        multi_input_graph.input_nodes();
+
+    assert(multi_inputs.size() == 2);
+    assert(multi_inputs[0] == x);
+    assert(multi_inputs[1] == weights);
+
+    std::vector<size_t> multi_outputs =
+        multi_input_graph.output_nodes();
+
+    assert(multi_outputs.size() == 1);
+    assert(multi_outputs[0] == multi_matmul);
+
     // Test branching graph
     Graph branching_graph;
 
