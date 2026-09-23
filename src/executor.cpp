@@ -1,14 +1,7 @@
 #include "executor.hpp"
 
-#include "operators/add.hpp"
-#include "operators/gelu.hpp"
-#include "operators/layernorm.hpp"
-#include "operators/matmul.hpp"
-#include "operators/relu.hpp"
-#include "operators/softmax.hpp"
-
+#include <memory>
 #include <stdexcept>
-#include <string>
 #include <vector>
 
 std::vector<Tensor> Executor::run(
@@ -22,85 +15,59 @@ std::vector<Tensor> Executor::run(
             "Cannot execute invalid graph");
     }
 
-    std::vector<Tensor> values;
+    const std::vector<size_t> order =
+        graph.execution_order();
 
-    values.reserve(graph.size());
+    const std::vector<size_t> input_nodes =
+        graph.input_nodes();
 
-    std::vector<bool> computed(graph.size(), false);
+    if (inputs.size() != input_nodes.size())
+    {
+        throw std::runtime_error(
+            "Number of input tensors does not match "
+            "number of graph input nodes");
+    }
+
+    // One tensor slot for every graph node.
+    //
+    // values[node_id] contains the tensor
+    // produced by that node.
+    std::vector<std::unique_ptr<Tensor>> values(
+        graph.size());
 
     size_t input_index = 0;
 
-    std::vector<size_t> order =
-        graph.execution_order();
-
     for (size_t node_id : order)
     {
-        const Node& current = graph.node(node_id);
+        const Node& current =
+            graph.node(node_id);
 
-        const std::string& operation =
-            current.operation();
-
-        if (operation == "Input")
+        if (current.operation() == "Input")
         {
-            if (input_index >= inputs.size())
-            {
-                throw std::runtime_error(
-                    "Not enough input tensors");
-            }
-
-            values.push_back(inputs[input_index]);
+            values[node_id] =
+                std::make_unique<Tensor>(
+                    inputs[input_index]);
 
             ++input_index;
-            computed[node_id] = true;
-
-            continue;
         }
-
-        if (current.inputs().empty())
-        {
-            throw std::runtime_error(
-                "Non-input node has no inputs");
-        }
-
-        const size_t first_input =
-            current.inputs()[0];
-
-        if (!computed[first_input])
-        {
-            throw std::runtime_error(
-                "Input dependency has not been computed");
-        }
-
-        const Tensor& input =
-            values[first_input];
-
-        Tensor result =
-            [&]() -> Tensor
-            {
-                if (operation == "ReLU")
-                {
-                    return relu(input);
-                }
-
-                if (operation == "Softmax")
-                {
-                    return softmax(input);
-                }
-
-                if (operation == "GELU")
-                {
-                    return gelu(input);
-                }
-
-                throw std::runtime_error(
-                    "Unsupported unary operation: " +
-                    operation);
-            }();
-
-        values.push_back(result);
-
-        computed[node_id] = true;
     }
 
-    return values;
+    std::vector<Tensor> outputs;
+
+    const std::vector<size_t> output_nodes =
+        graph.output_nodes();
+
+    for (size_t node_id : output_nodes)
+    {
+        if (!values[node_id])
+        {
+            throw std::runtime_error(
+                "Graph output was not computed");
+        }
+
+        outputs.push_back(
+            *values[node_id]);
+    }
+
+    return outputs;
 }

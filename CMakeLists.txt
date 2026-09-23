@@ -13,7 +13,7 @@ add_library(runtime_core
     src/tensor.cpp
 
     src/node.cpp
-
+    src/executor.cpp
     src/graph.cpp
     src/operators/add.cpp
     src/operators/relu.cpp
@@ -134,3 +134,8 @@ target_link_libraries(graph_test
     PRIVATE
         runtime_core
 )
+
+
+
+add_executable(executor_test tests/executor_test.cpp)
+target_link_libraries(executor_test PRIVATE runtime_core)

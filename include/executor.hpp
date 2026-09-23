@@ -3,6 +3,7 @@
 #include "graph.hpp"
 #include "tensor.hpp"
 
+#include <memory>
 #include <vector>
 
 class Executor
