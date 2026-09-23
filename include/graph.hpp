@@ -1,5 +1,6 @@
 #pragma once
 
+#include<vector>
 #include "node.hpp"
 
 #include <cstddef>
@@ -14,6 +15,11 @@ public:
     void connect(size_t from, size_t to);
 
     const Node& node(size_t id) const;
+
+    bool validate() const;
+
+
+   std::vector<size_t> execution_order() const;
 
     Node& node(size_t id);
 
