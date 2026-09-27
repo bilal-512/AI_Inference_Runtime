@@ -2,6 +2,9 @@
 #include "operators/relu.hpp"
 #include "operators/add.hpp"
 #include "operators/matmul.hpp"
+#include "operators/softmax.hpp"
+
+
 
 #include <memory>
 #include <stdexcept>
@@ -148,6 +151,33 @@ else if (operation == "MatMul")
         matmul(
             *values[input_a],
             *values[input_b]);
+
+    values[node_id] =
+        std::make_unique<Tensor>(
+            std::move(result));
+}
+	// --------------------------------
+// Softmax
+// --------------------------------
+else if (operation == "Softmax")
+{
+    if (current.inputs().size() != 1)
+    {
+        throw std::runtime_error(
+            "Softmax expects exactly one input");
+    }
+
+    const size_t input_node =
+        current.inputs()[0];
+
+    if (!values[input_node])
+    {
+        throw std::runtime_error(
+            "Softmax input tensor is not available");
+    }
+
+    Tensor result =
+        softmax(*values[input_node]);
 
     values[node_id] =
         std::make_unique<Tensor>(
