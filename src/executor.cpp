@@ -1,4 +1,5 @@
 #include "executor.hpp"
+#include "operators/relu.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -42,13 +43,57 @@ std::vector<Tensor> Executor::run(
         const Node& current =
             graph.node(node_id);
 
-        if (current.operation() == "Input")
+        const std::string& operation =
+            current.operation();
+
+        // --------------------------------
+        // Input
+        // --------------------------------
+        if (operation == "Input")
         {
             values[node_id] =
                 std::make_unique<Tensor>(
                     inputs[input_index]);
 
             ++input_index;
+        }
+
+        // --------------------------------
+        // ReLU
+        // --------------------------------
+        else if (operation == "ReLU")
+        {
+            if (current.inputs().size() != 1)
+            {
+                throw std::runtime_error(
+                    "ReLU expects exactly one input");
+            }
+
+            const size_t input_node =
+                current.inputs()[0];
+
+            if (!values[input_node])
+            {
+                throw std::runtime_error(
+                    "ReLU input tensor is not available");
+            }
+
+            Tensor result =
+                relu(*values[input_node]);
+
+            values[node_id] =
+                std::make_unique<Tensor>(
+                    std::move(result));
+        }
+
+        // --------------------------------
+        // Unsupported operation
+        // --------------------------------
+        else
+        {
+            throw std::runtime_error(
+                "Unsupported operation: " +
+                operation);
         }
     }
 
