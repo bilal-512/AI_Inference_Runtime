@@ -3,7 +3,7 @@
 #include "operators/add.hpp"
 #include "operators/matmul.hpp"
 #include "operators/softmax.hpp"
-
+#include "operators/layernorm.hpp"
 
 
 #include <memory>
@@ -184,6 +184,44 @@ else if (operation == "Softmax")
             std::move(result));
 }
 
+// --------------------------------
+// LayerNorm
+// --------------------------------
+else if (operation == "LayerNorm")
+{
+    if (current.inputs().size() != 3)
+    {
+        throw std::runtime_error(
+            "LayerNorm expects exactly three inputs");
+    }
+
+    const size_t input_node =
+        current.inputs()[0];
+
+    const size_t gamma_node =
+        current.inputs()[1];
+
+    const size_t beta_node =
+        current.inputs()[2];
+
+    if (!values[input_node] ||
+        !values[gamma_node] ||
+        !values[beta_node])
+    {
+        throw std::runtime_error(
+            "LayerNorm input tensor is not available");
+    }
+
+    Tensor result =
+        layernorm(
+            *values[input_node],
+            *values[gamma_node],
+            *values[beta_node]);
+
+    values[node_id] =
+        std::make_unique<Tensor>(
+            std::move(result));
+}
         // --------------------------------
         // Unsupported operation
         // --------------------------------
