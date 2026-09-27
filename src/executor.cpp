@@ -4,7 +4,7 @@
 #include "operators/matmul.hpp"
 #include "operators/softmax.hpp"
 #include "operators/layernorm.hpp"
-
+#include "operators/gelu.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -222,6 +222,31 @@ else if (operation == "LayerNorm")
         std::make_unique<Tensor>(
             std::move(result));
 }
+
+
+
+	else if (operation == "GELU") {
+    if (current.inputs().size() != 1) {
+        throw std::runtime_error(
+            "GELU expects exactly one input");
+    }
+
+    const size_t input_node =
+        current.inputs()[0];
+
+    if (!values[input_node]) {
+        throw std::runtime_error(
+            "GELU input tensor is not available");
+    }
+
+    Tensor result =
+        gelu(*values[input_node]);
+
+    values[node_id] =
+        std::make_unique<Tensor>(
+            std::move(result));
+}
+
         // --------------------------------
         // Unsupported operation
         // --------------------------------
