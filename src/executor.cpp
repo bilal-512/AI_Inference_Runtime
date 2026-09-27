@@ -1,5 +1,7 @@
 #include "executor.hpp"
 #include "operators/relu.hpp"
+#include "operators/add.hpp"
+#include "operators/matmul.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -85,6 +87,72 @@ std::vector<Tensor> Executor::run(
                 std::make_unique<Tensor>(
                     std::move(result));
         }
+	        // --------------------------------
+        // Add
+        // --------------------------------
+        else if (operation == "Add")
+        {
+            if (current.inputs().size() != 2)
+            {
+                throw std::runtime_error(
+                    "Add expects exactly two inputs");
+            }
+
+            const size_t input_a =
+                current.inputs()[0];
+
+            const size_t input_b =
+                current.inputs()[1];
+
+            if (!values[input_a] ||
+                !values[input_b])
+            {
+                throw std::runtime_error(
+                    "Add input tensor is not available");
+            }
+
+            Tensor result =
+                add(
+                    *values[input_a],
+                    *values[input_b]);
+
+            values[node_id] =
+                std::make_unique<Tensor>(
+                    std::move(result));
+        }
+	// --------------------------------
+// MatMul
+// --------------------------------
+else if (operation == "MatMul")
+{
+    if (current.inputs().size() != 2)
+    {
+        throw std::runtime_error(
+            "MatMul expects exactly two inputs");
+    }
+
+    const size_t input_a =
+        current.inputs()[0];
+
+    const size_t input_b =
+        current.inputs()[1];
+
+    if (!values[input_a] ||
+        !values[input_b])
+    {
+        throw std::runtime_error(
+            "MatMul input tensor is not available");
+    }
+
+    Tensor result =
+        matmul(
+            *values[input_a],
+            *values[input_b]);
+
+    values[node_id] =
+        std::make_unique<Tensor>(
+            std::move(result));
+}
 
         // --------------------------------
         // Unsupported operation
