@@ -72,40 +72,72 @@ void Graph::connect(size_t from, size_t to)
 }
 
 
-bool Graph::validate() const
-{
-    for (const Node& current : nodes_)
-    {
-        // Check input connections
-        for (size_t input_id : current.inputs())
-        {
-            if (input_id >= nodes_.size())
-            {
+
+bool Graph::validate() const {
+    for (const Node& current : nodes_) {
+        const size_t current_id = current.id();
+
+        // Check that this node has a valid ID.
+        if (current_id >= nodes_.size()) {
+            return false;
+        }
+
+        // Check input connections.
+        for (size_t input_id : current.inputs()) {
+            if (input_id >= nodes_.size()) {
                 return false;
             }
 
-            if (input_id == current.id())
-            {
+            if (input_id == current_id) {
+                return false;
+            }
+
+            // The input node must list this node as an output.
+            const auto& input_outputs =
+                nodes_[input_id].outputs();
+
+            if (std::find(
+                    input_outputs.begin(),
+                    input_outputs.end(),
+                    current_id
+                ) == input_outputs.end()) {
                 return false;
             }
         }
 
-        // Check output connections
-        for (size_t output_id : current.outputs())
-        {
-            if (output_id >= nodes_.size())
-            {
+        // Check output connections.
+        for (size_t output_id : current.outputs()) {
+            if (output_id >= nodes_.size()) {
                 return false;
             }
 
-            if (output_id == current.id())
-            {
+            if (output_id == current_id) {
+                return false;
+            }
+
+            // The output node must list this node as an input.
+            const auto& output_inputs =
+                nodes_[output_id].inputs();
+
+            if (std::find(
+                    output_inputs.begin(),
+                    output_inputs.end(),
+                    current_id
+                ) == output_inputs.end()) {
                 return false;
             }
         }
     }
+    // A valid graph must also be acyclic.
+    try {
+        (void)execution_order();
+    }
+    catch (const std::runtime_error&) {
+        return false;
+    }
 
     return true;
+
 }
 
 

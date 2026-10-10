@@ -124,7 +124,14 @@ int main() {
             std::abs(output.data()[i] - expected[i])
             < 1e-5f
         );
+
     }
+
+
+// Test model validation
+assert(model.validate());
+
+std::cout << "Model validation test passed!" << std::endl;
 
     std::cout << "Two-layer neural network test passed!"
               << std::endl;
@@ -134,5 +141,24 @@ int main() {
               << output.data()[1] << "]"
               << std::endl;
 
+
     return 0;
+
+// Test that a MatMul node with a missing weight is rejected.
+Model invalid_model;
+
+size_t input_id = invalid_model.graph().addNode("Input");
+size_t matmul_id = invalid_model.graph().addNode("MatMul");
+
+invalid_model.graph().connect(input_id, matmul_id);
+
+// Deliberately reference a weight that does not exist.
+invalid_model.graph().node(matmul_id).set_attribute(
+    "weight", "missing_weight"
+);
+
+assert(!invalid_model.validate());
+
+std::cout << "Invalid model validation test passed!" << std::endl;
+
 }

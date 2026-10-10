@@ -253,7 +253,8 @@ int main()
 
     assert(cycle_exception_thrown);
 
-
+    // A cyclic graph must also fail validation.
+    assert(!cyclic_graph.validate());
 
 
     std::cout << "Graph execution order  test passed!" << std::endl;

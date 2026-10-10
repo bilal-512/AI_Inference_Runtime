@@ -20,6 +20,7 @@ public:
     const Tensor& parameter(
         const std::string& name
     ) const;
+bool validate() const;
 
 private:
     Graph graph_;
