@@ -4,9 +4,9 @@
 #include <stdexcept>
 
 Tensor layernorm(
-    const Tensor& input,
-    const Tensor& gamma,
-    const Tensor& beta,
+    const Tensor &input,
+    const Tensor &gamma,
+    const Tensor &beta,
     float epsilon)
 {
     if (input.ndim() != 1 ||
@@ -34,9 +34,7 @@ Tensor layernorm(
 
     Tensor output({n});
 
-    // --------------------------------------------------
     // Step 1: Calculate mean
-    // --------------------------------------------------
 
     float mean = 0.0f;
 
@@ -47,9 +45,7 @@ Tensor layernorm(
 
     mean /= static_cast<float>(n);
 
-    // --------------------------------------------------
     // Step 2: Calculate variance
-    // --------------------------------------------------
 
     float variance = 0.0f;
 
@@ -62,9 +58,7 @@ Tensor layernorm(
 
     variance /= static_cast<float>(n);
 
-    // --------------------------------------------------
     // Step 3: Normalize, scale and shift
-    // --------------------------------------------------
 
     const float denominator =
         std::sqrt(variance + epsilon);
@@ -75,8 +69,7 @@ Tensor layernorm(
             (input.data()[i] - mean) / denominator;
 
         output.data()[i] =
-            gamma.data()[i] * normalized
-            + beta.data()[i];
+            gamma.data()[i] * normalized + beta.data()[i];
     }
 
     return output;

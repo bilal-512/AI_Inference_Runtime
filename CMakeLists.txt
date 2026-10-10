@@ -21,6 +21,7 @@ add_library(runtime_core
     src/operators/softmax.cpp
     src/operators/layernorm.cpp
     src/operators/gelu.cpp
+    src/model.cpp
 )
 
 target_include_directories(runtime_core
@@ -139,3 +140,7 @@ target_link_libraries(graph_test
 
 add_executable(executor_test tests/executor_test.cpp)
 target_link_libraries(executor_test PRIVATE runtime_core)
+
+
+add_executable(model_test tests/model_test.cpp)
+target_link_libraries(model_test PRIVATE runtime_core)
