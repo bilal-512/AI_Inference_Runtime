@@ -151,13 +151,3 @@ A minimal usage pattern is:
 ```
 
 This project is designed as a simple educational and experimental inference runtime rather than a full production ML framework.
-
-## License
-
-This project does not currently declare a license file. If you plan to publish it on GitHub, consider adding an appropriate open-source license such as MIT or Apache 2.0.
-
-## Notes
-
-- The project is a CMake-based native C++ application.
-- The `build/` directory is generated output and should not be committed unless you specifically want to track generated artifacts.
-- This README is intended to help GitHub visitors understand the project quickly and build it locally.
